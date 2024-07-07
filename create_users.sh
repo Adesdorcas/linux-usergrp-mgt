@@ -1,10 +1,10 @@
 #!/bin/bash
 
 ####################################################################
-# create_users.sh
 # Script to create users and groups based on a text file input
-# Author: [Dorcas Emenoge]
+# Author: [Dorcas Adebayo]
 # Date: [06-July-2024]
+# Usage: sudo ./create_users.sh dev.txt
 ####################################################################
 
 # Check if the script is run as root
@@ -20,13 +20,13 @@ if [[ -z $1 ]]; then
 fi
 
 # Define file paths
-INPUT_FILE=$1
+TEXT_FILE=$1
 LOG_FILE="/var/log/user_management.log"
 PASSWORD_FILE="/var/secure/user_passwords.csv"
 
-# Ensure the input file exists
-if [[ ! -f $INPUT_FILE ]]; then
-    echo "Input file not found: $INPUT_FILE" | tee -a $LOG_FILE
+# Ensure the text file exists
+if [[ ! -f $TEXT_FILE ]]; then
+    echo "Text file not found: $TEXT_FILE" | tee -a $LOG_FILE
     exit 1
 fi
 
@@ -44,7 +44,7 @@ generate_password() {
     tr -dc 'A-Za-z0-9!@#$%&*' < /dev/urandom | head -c 12
 }
 
-# Read the input file line by line
+# Read the text file line by line
 while IFS=';' read -r user groups; do
     # Remove leading and trailing whitespace
     user=$(echo "$user" | xargs)
@@ -100,6 +100,6 @@ while IFS=';' read -r user groups; do
     chown "$user:$user" "/home/$user"
     echo "Permissions set for user $user's home directory." | tee -a $LOG_FILE
 
-done < "$INPUT_FILE"
+done < "$TEXT_FILE"
 
 echo "User creation process completed." | tee -a $LOG_FILE
